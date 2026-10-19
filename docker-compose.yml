@@ -1,0 +1,32 @@
+services:
+  postgres:
+    image: postgres:15
+    container_name: postgres_karima
+    env_file: .env
+    ports:
+      - "22089:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+    networks:
+      - uts_network
+
+  pgadmin:
+    image: dpage/pgadmin4
+    container_name: pgadmin_karima
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@admin.com
+      PGADMIN_DEFAULT_PASSWORD: admin
+    ports:
+      - "44089:80"
+    depends_on:
+      - postgres
+    networks:
+      - uts_network
+
+volumes:
+  pgdata:
+
+networks:
+  uts_network:
+    driver: bridge
